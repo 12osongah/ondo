@@ -3,19 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>온도컵 To Do List</title>
+  <title>온도컵 모바일 온보딩</title>
   <style>
     :root {
-      --primary: #5B8DEF;
-      --primary-dark: #3F6FD9;
-      --bg: #F5F7FB;
-      --card: #FFFFFF;
-      --text: #1F2937;
-      --sub: #8A94A6;
-      --line: #E6EAF2;
-      --done: #B7BFCE;
+      --bg: #FFFFFF;
+      --surface: #FFFFFF;
+      --soft: #F7F8FA;
+      --line: #EAECEF;
+      --text: #111111;
+      --body: #555555;
+      --muted: #888888;
+      --dark: #171717;
+      --todo-blue: #5B8DEF;
+      --todo-blue-dark: #3F6FD9;
       --danger: #FF6B6B;
-      --soft-blue: #EDF4FF;
+      --done: #B7BFCE;
+      --side: 24px;
+      --radius-card: 20px;
+      --radius-image: 24px;
     }
 
     * {
@@ -32,7 +37,7 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background: #E9EEF7;
+      background: #EEF1F5;
       font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
       color: var(--text);
       display: flex;
@@ -62,14 +67,23 @@
       overflow: hidden;
       position: relative;
       border-radius: 28px;
-      box-shadow: 0 20px 50px rgba(31, 41, 55, 0.12);
+      box-shadow: 0 20px 50px rgba(17, 24, 39, 0.12);
     }
 
     .app {
       height: 100%;
-      padding: 28px 22px 24px;
       display: flex;
       flex-direction: column;
+      background: var(--bg);
+    }
+
+    .top-shell {
+      flex: 0 0 auto;
+      padding: 18px var(--side) 12px;
+      background: rgba(255, 255, 255, 0.96);
+      border-bottom: 1px solid rgba(234, 236, 239, 0.9);
+      position: relative;
+      z-index: 30;
     }
 
     .tab-menu {
@@ -77,19 +91,16 @@
       grid-template-columns: 1fr 1fr;
       gap: 6px;
       padding: 5px;
-      margin-bottom: 22px;
-      background: #EAF0FA;
-      border-radius: 16px;
-      flex: 0 0 auto;
+      background: #F2F4F7;
+      border-radius: 999px;
     }
 
     .tab-button {
       width: 100%;
-      height: 40px;
-      border-radius: 12px;
-      background: transparent;
-      color: var(--sub);
-      font-size: 14px;
+      height: 38px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 13px;
       font-weight: 700;
       letter-spacing: -0.2px;
       cursor: pointer;
@@ -100,23 +111,32 @@
     }
 
     .tab-button.active {
-      background: #FFFFFF;
-      color: var(--primary-dark);
-      box-shadow: 0 4px 12px rgba(31, 41, 55, 0.06);
+      background: #111111;
+      color: #FFFFFF;
+      box-shadow: 0 8px 16px rgba(17, 17, 17, 0.12);
     }
 
     .tab-panel {
       display: none;
-      height: 100%;
+      flex: 1;
       min-height: 0;
-      flex-direction: column;
+      overflow: hidden;
     }
 
     .tab-panel.active {
       display: flex;
+      flex-direction: column;
     }
 
-    .header {
+    .todo-panel-inner {
+      height: 100%;
+      padding: 24px 22px 24px;
+      display: flex;
+      flex-direction: column;
+      background: #F5F7FB;
+    }
+
+    .todo-header {
       margin-bottom: 18px;
       flex: 0 0 auto;
     }
@@ -124,44 +144,24 @@
     .date {
       font-size: 13px;
       font-weight: 700;
-      color: var(--primary-dark);
+      color: var(--todo-blue-dark);
       margin-bottom: 8px;
       letter-spacing: -0.2px;
     }
 
-    h1 {
+    .todo-title {
       margin: 0;
       font-size: 28px;
       line-height: 1.25;
       letter-spacing: -0.7px;
     }
 
-    .quote {
+    .todo-quote {
       margin: 9px 0 0;
       font-size: 14px;
       line-height: 1.55;
       color: #667085;
       letter-spacing: -0.25px;
-    }
-
-    .summary-card {
-      margin-top: 17px;
-      padding: 18px;
-      background: linear-gradient(135deg, #FFFFFF 0%, #EDF4FF 100%);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-    }
-
-    .summary-title {
-      font-size: 13px;
-      color: var(--sub);
-      margin-bottom: 8px;
-    }
-
-    .summary-count {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -0.4px;
     }
 
     .input-area {
@@ -176,13 +176,13 @@
       flex: 1;
       min-width: 0;
       height: 50px;
-      border: 1px solid var(--line);
+      border: 1px solid #E6EAF2;
       border-radius: 15px;
       padding: 0 15px;
       font-size: 15px;
       outline: none;
-      background: var(--card);
-      color: var(--text);
+      background: #FFFFFF;
+      color: #1F2937;
     }
 
     .input-area input::placeholder {
@@ -190,7 +190,7 @@
     }
 
     .input-area input:focus {
-      border-color: var(--primary);
+      border-color: var(--todo-blue);
       box-shadow: 0 0 0 3px rgba(91, 141, 239, 0.12);
     }
 
@@ -208,7 +208,7 @@
       width: 54px;
       height: 50px;
       border-radius: 15px;
-      background: var(--primary);
+      background: var(--todo-blue);
       transition: 0.2s ease;
     }
 
@@ -227,11 +227,6 @@
 
     .add-button::after {
       transform: translate(-50%, -50%) rotate(90deg);
-    }
-
-    .add-button:active {
-      transform: scale(0.96);
-      background: var(--primary-dark);
     }
 
     .list-wrap {
@@ -258,8 +253,8 @@
       min-height: 58px;
       padding: 14px;
       margin-bottom: 10px;
-      background: var(--card);
-      border: 1px solid var(--line);
+      background: #FFFFFF;
+      border: 1px solid #E6EAF2;
       border-radius: 17px;
       animation: fadeIn 0.18s ease;
     }
@@ -287,8 +282,8 @@
     }
 
     .todo-item.done .check {
-      background: var(--primary);
-      border-color: var(--primary);
+      background: var(--todo-blue);
+      border-color: var(--todo-blue);
     }
 
     .todo-item.done .check::after {
@@ -336,7 +331,7 @@
     .empty {
       margin-top: 80px;
       text-align: center;
-      color: var(--sub);
+      color: #8A94A6;
       display: none;
     }
 
@@ -346,7 +341,7 @@
       margin: 0 auto 14px;
       border-radius: 20px;
       background: #FFFFFF;
-      border: 1px solid var(--line);
+      border: 1px solid #E6EAF2;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -357,8 +352,8 @@
       content: "";
       width: 16px;
       height: 9px;
-      border-left: 3px solid var(--primary);
-      border-bottom: 3px solid var(--primary);
+      border-left: 3px solid var(--todo-blue);
+      border-bottom: 3px solid var(--todo-blue);
       transform: rotate(-45deg);
       margin-top: -4px;
     }
@@ -369,110 +364,824 @@
       line-height: 1.6;
     }
 
-    .intro-wrap {
-      flex: 1;
-      overflow-y: auto;
-      min-height: 0;
-      padding-right: 2px;
-    }
-
-    .intro-wrap::-webkit-scrollbar {
-      width: 0;
-    }
-
-    .brand-card {
-      padding: 20px;
-      margin-bottom: 12px;
-      background: #FFFFFF;
-      border: 1px solid var(--line);
-      border-radius: 20px;
-    }
-
-    .brand-label {
-      display: inline-flex;
-      align-items: center;
-      height: 28px;
-      padding: 0 11px;
-      margin-bottom: 14px;
-      border-radius: 999px;
-      background: var(--soft-blue);
-      color: var(--primary-dark);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: -0.2px;
-    }
-
-    .brand-title {
-      margin: 0 0 10px;
-      font-size: 24px;
-      line-height: 1.32;
-      letter-spacing: -0.7px;
-    }
-
-    .brand-desc {
-      margin: 0;
-      color: #667085;
-      font-size: 14px;
-      line-height: 1.65;
-      letter-spacing: -0.25px;
-    }
-
-    .tea-list {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 9px;
-      margin-top: 16px;
-    }
-
-    .tea-item {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      padding: 13px;
-      background: #FAFBFE;
-      border: 1px solid var(--line);
-      border-radius: 15px;
-    }
-
-    .tea-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      flex: 0 0 auto;
-    }
-
-    .tea-dot.morning { background: #F7C66A; }
-    .tea-dot.focus { background: #75B7FF; }
-    .tea-dot.reset { background: #75D9B2; }
-    .tea-dot.calm { background: #B69DF8; }
-    .tea-dot.rest { background: #E8A06D; }
-    .tea-dot.night { background: #6673A6; }
-
-    .tea-text {
-      min-width: 0;
-    }
-
-    .tea-text strong {
-      display: block;
-      font-size: 14px;
-      line-height: 1.4;
-      letter-spacing: -0.2px;
-    }
-
-    .tea-text span {
-      display: block;
-      margin-top: 2px;
-      font-size: 12px;
-      color: var(--sub);
-      letter-spacing: -0.2px;
-    }
-
     .bottom-note {
       padding-top: 14px;
       font-size: 12px;
-      color: var(--sub);
+      color: #8A94A6;
       text-align: center;
       flex: 0 0 auto;
+    }
+
+    .onboarding {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+      background: #FFFFFF;
+    }
+
+    .intro-scroll {
+      height: 100%;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      padding: 0 var(--side) 34px;
+    }
+
+    .intro-scroll::-webkit-scrollbar {
+      width: 0;
+    }
+
+    .intro-section {
+      padding: 72px 0 0;
+    }
+
+    .hero-section {
+      padding-top: 34px;
+    }
+
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 32px;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #FFFFFF;
+      color: #111111;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .logo-mark {
+      width: 12px;
+      height: 12px;
+      border: 2px solid #111111;
+      border-radius: 50% 50% 48% 48%;
+      position: relative;
+    }
+
+    .logo-mark::after {
+      content: "";
+      position: absolute;
+      right: -5px;
+      top: 3px;
+      width: 5px;
+      height: 5px;
+      border: 2px solid #111111;
+      border-left: 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .main-title {
+      margin: 22px 0 0;
+      font-size: 32px;
+      line-height: 1.3;
+      letter-spacing: -1.05px;
+      font-weight: 800;
+      color: #111111;
+    }
+
+    .sub-copy {
+      margin: 13px 0 0;
+      font-size: 18px;
+      line-height: 1.55;
+      letter-spacing: -0.5px;
+      font-weight: 600;
+      color: #222222;
+    }
+
+    .body-copy {
+      margin: 13px 0 0;
+      font-size: 14px;
+      line-height: 1.65;
+      letter-spacing: -0.25px;
+      color: var(--body);
+    }
+
+    .hero-visual {
+      position: relative;
+      height: 350px;
+      margin-top: 34px;
+      border-radius: var(--radius-image);
+      background: linear-gradient(180deg, #F8FBFF 0%, #FFFFFF 58%, #F7F8FA 100%);
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+
+    .soft-line {
+      position: absolute;
+      left: -20px;
+      right: -20px;
+      top: 54px;
+      height: 68px;
+      background: #EEF6FF;
+      transform: rotate(-5deg);
+    }
+
+    .hero-package-wrap {
+      position: absolute;
+      left: 36px;
+      top: 52px;
+      transform: rotate(-4deg);
+      z-index: 2;
+    }
+
+    .tea-cup {
+      position: absolute;
+      right: 26px;
+      bottom: 30px;
+      width: 122px;
+      height: 92px;
+      z-index: 1;
+    }
+
+    .cup-bowl {
+      position: absolute;
+      left: 8px;
+      bottom: 16px;
+      width: 92px;
+      height: 58px;
+      background: #FFFFFF;
+      border: 1px solid #DDE2EA;
+      border-radius: 0 0 45px 45px;
+      box-shadow: 0 13px 22px rgba(17, 17, 17, 0.08);
+    }
+
+    .cup-bowl::before {
+      content: "";
+      position: absolute;
+      left: 8px;
+      top: -10px;
+      width: 76px;
+      height: 18px;
+      border-radius: 50%;
+      background: #D9EFF6;
+      border: 1px solid #DDE2EA;
+    }
+
+    .cup-handle {
+      position: absolute;
+      right: 4px;
+      bottom: 30px;
+      width: 32px;
+      height: 28px;
+      border: 7px solid #FFFFFF;
+      border-left: 0;
+      border-radius: 0 24px 24px 0;
+    }
+
+    .steam {
+      position: absolute;
+      width: 2px;
+      height: 34px;
+      background: linear-gradient(180deg, rgba(110, 168, 254, 0), rgba(110, 168, 254, 0.38), rgba(110, 168, 254, 0));
+      border-radius: 999px;
+      top: 0;
+    }
+
+    .steam.s1 { left: 28px; transform: rotate(8deg); }
+    .steam.s2 { left: 52px; height: 43px; transform: rotate(-7deg); }
+    .steam.s3 { left: 76px; transform: rotate(5deg); }
+
+    .primary-btn,
+    .outline-btn,
+    .dark-btn {
+      width: 100%;
+      height: 48px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -0.25px;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .primary-btn {
+      margin-top: 24px;
+      background: #111111;
+      color: #FFFFFF;
+    }
+
+    .outline-btn {
+      background: #FFFFFF;
+      color: #111111;
+      border: 1px solid #D9DDE4;
+    }
+
+    .dark-btn {
+      background: #111111;
+      color: #FFFFFF;
+    }
+
+    .primary-btn:active,
+    .outline-btn:active,
+    .dark-btn:active,
+    .package-list-button:active,
+    .temp-card:active,
+    .detail-nav-btn:active {
+      transform: scale(0.98);
+    }
+
+    .section-kicker {
+      display: inline-flex;
+      align-items: center;
+      height: 26px;
+      padding: 0 10px;
+      margin-bottom: 14px;
+      border-radius: 999px;
+      background: #F5F6F8;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.38;
+      letter-spacing: -0.75px;
+      font-weight: 800;
+      color: #111111;
+    }
+
+    .section-desc {
+      margin: 10px 0 0;
+      font-size: 14px;
+      line-height: 1.65;
+      letter-spacing: -0.25px;
+      color: var(--body);
+    }
+
+    .temperature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .temp-card {
+      min-height: 118px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #FFFFFF;
+      padding: 13px 10px;
+      text-align: left;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .temp-chip {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      margin-bottom: 11px;
+      position: relative;
+      overflow: hidden;
+      display: block;
+    }
+
+    .temp-chip::after {
+      content: "";
+      position: absolute;
+      left: -5px;
+      right: -5px;
+      bottom: 6px;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.42);
+      border-radius: 50%;
+      transform: rotate(-12deg);
+    }
+
+    .temp-no,
+    .temp-name,
+    .temp-keyword {
+      display: block;
+    }
+
+    .temp-no {
+      font-size: 10px;
+      line-height: 1;
+      color: var(--muted);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .temp-name {
+      margin-top: 7px;
+      font-size: 12px;
+      line-height: 1.25;
+      font-weight: 800;
+      color: #111111;
+      letter-spacing: -0.25px;
+    }
+
+    .temp-keyword {
+      margin-top: 5px;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: -0.2px;
+    }
+
+    .package-list {
+      margin-top: 24px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .package-list-button {
+      width: 100%;
+      min-height: 126px;
+      padding: 14px 12px;
+      display: grid;
+      grid-template-columns: 76px 1fr 20px;
+      align-items: center;
+      gap: 26px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--item-soft, #FBFBFC);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      text-align: left;
+    }
+
+    .list-package-mini {
+      transform: scale(0.56);
+      transform-origin: left center;
+      margin-left: 0;
+      width: 76px;
+      height: 118px;
+    }
+
+    .list-info {
+      min-width: 0;
+    }
+
+    .list-number,
+    .list-name,
+    .list-kor {
+      display: block;
+    }
+
+    .list-number {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--item-main);
+    }
+
+    .list-name {
+      margin-top: 5px;
+      font-size: 17px;
+      line-height: 1.25;
+      font-weight: 800;
+      letter-spacing: -0.45px;
+      color: #111111;
+    }
+
+    .list-kor {
+      margin-top: 6px;
+      font-size: 13px;
+      line-height: 1.45;
+      color: #555555;
+      letter-spacing: -0.25px;
+    }
+
+    .arrow {
+      position: relative;
+      width: 18px;
+      height: 18px;
+      justify-self: end;
+    }
+
+    .arrow::before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 3px;
+      width: 9px;
+      height: 9px;
+      border-top: 2px solid #111111;
+      border-right: 2px solid #111111;
+      transform: rotate(45deg);
+    }
+
+    .info-blocks {
+      margin-top: 26px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .info-block {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #FFFFFF;
+    }
+
+    .info-visual {
+      width: 52px;
+      height: 38px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+      background: linear-gradient(135deg, #F4D35E 0%, #6EA8FE 38%, #B497D6 74%, #5C6AC4 100%);
+      opacity: 0.78;
+    }
+
+    .info-block:nth-child(2) .info-visual {
+      background: linear-gradient(135deg, #F28482 0%, #84D2F6 100%);
+    }
+
+    .info-block:nth-child(3) .info-visual {
+      background: linear-gradient(135deg, #E6C7A8 0%, #D98C8C 100%);
+    }
+
+    .info-title {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.45;
+      font-weight: 800;
+      letter-spacing: -0.35px;
+      color: #111111;
+    }
+
+    .info-desc {
+      margin: 7px 0 0;
+      font-size: 13px;
+      line-height: 1.6;
+      letter-spacing: -0.25px;
+      color: #555555;
+    }
+
+    .cta-section {
+      padding-bottom: 40px;
+    }
+
+    .cta-card {
+      padding: 28px 20px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: #F8F9FB;
+      text-align: left;
+    }
+
+    .cta-title {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.36;
+      letter-spacing: -0.8px;
+      font-weight: 800;
+    }
+
+    .cta-desc {
+      margin: 11px 0 22px;
+      font-size: 14px;
+      line-height: 1.65;
+      letter-spacing: -0.25px;
+      color: var(--body);
+    }
+
+    .cta-actions {
+      display: grid;
+      gap: 10px;
+    }
+
+    .package-mockup {
+      --main: #6EA8FE;
+      --sub: #D9ED92;
+      width: 148px;
+      height: 210px;
+      border-radius: 12px;
+      background: #FFFFFF;
+      border: 1px solid #D9DDE4;
+      box-shadow: 0 16px 28px rgba(17, 17, 17, 0.12);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .package-mockup::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, transparent 38%);
+    }
+
+    .pack-logo {
+      position: absolute;
+      top: 18px;
+      left: 16px;
+      font-size: 10px;
+      line-height: 1;
+      letter-spacing: 0.08em;
+      font-weight: 900;
+      color: #111111;
+    }
+
+    .pack-top-line {
+      position: absolute;
+      top: 41px;
+      left: 16px;
+      width: 33px;
+      height: 1px;
+      background: #111111;
+      opacity: 0.25;
+    }
+
+    .wave {
+      position: absolute;
+      left: -22px;
+      right: -22px;
+      bottom: 62px;
+      height: 74px;
+      background: var(--main);
+      opacity: 0.9;
+      border-radius: 50% 50% 0 0;
+      transform: rotate(-8deg);
+    }
+
+    .wave::before {
+      content: "";
+      position: absolute;
+      left: 26px;
+      right: 22px;
+      top: -19px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--sub);
+      opacity: 0.95;
+    }
+
+    .pack-bottom-name {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 20px;
+      font-size: 17px;
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: -0.6px;
+      color: #111111;
+      text-transform: lowercase;
+    }
+
+    .pack-blend {
+      position: absolute;
+      left: 16px;
+      bottom: 9px;
+      max-width: 92px;
+      font-size: 6.5px;
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+      color: #111111;
+      opacity: 0.62;
+      text-transform: uppercase;
+    }
+
+    .pack-number {
+      position: absolute;
+      right: 14px;
+      bottom: 10px;
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 900;
+      color: #111111;
+      opacity: 0.65;
+    }
+
+    .detail-page {
+      position: absolute;
+      inset: 0;
+      z-index: 40;
+      background: #FFFFFF;
+      transform: translateX(100%);
+      transition: transform 0.28s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-page.active {
+      transform: translateX(0);
+    }
+
+    .detail-top {
+      flex: 0 0 auto;
+      height: 62px;
+      padding: 0 var(--side);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.96);
+    }
+
+    .back-btn {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: #FFFFFF;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .back-btn::before {
+      content: "";
+      position: absolute;
+      left: 15px;
+      top: 13px;
+      width: 9px;
+      height: 9px;
+      border-left: 2px solid #111111;
+      border-bottom: 2px solid #111111;
+      transform: rotate(45deg);
+    }
+
+    .detail-count {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .detail-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 26px var(--side) 28px;
+    }
+
+    .detail-scroll::-webkit-scrollbar {
+      width: 0;
+    }
+
+    .detail-hero {
+      text-align: center;
+    }
+
+    .detail-number {
+      display: inline-flex;
+      align-items: center;
+      height: 26px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: var(--detail-soft);
+      color: var(--detail-main);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+    }
+
+    .detail-package-wrap {
+      width: 206px;
+      height: 276px;
+      margin: 22px auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-image);
+      background: linear-gradient(180deg, var(--detail-soft) 0%, #FFFFFF 100%);
+      border: 1px solid var(--line);
+    }
+
+    .detail-package-wrap .package-mockup {
+      transform: scale(1.12);
+    }
+
+    .product-name {
+      margin: 26px 0 0;
+      font-size: 28px;
+      line-height: 1.18;
+      letter-spacing: -0.9px;
+      font-weight: 900;
+      color: #111111;
+      text-transform: lowercase;
+    }
+
+    .product-kor {
+      margin: 9px 0 0;
+      font-size: 18px;
+      line-height: 1.5;
+      letter-spacing: -0.45px;
+      font-weight: 700;
+      color: #222222;
+    }
+
+    .blend-name {
+      margin-top: 13px;
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 13px;
+      border-radius: 999px;
+      background: #F7F8FA;
+      color: #555555;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 700;
+      letter-spacing: -0.1px;
+    }
+
+    .detail-blocks {
+      margin-top: 36px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .detail-card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #FFFFFF;
+      text-align: left;
+    }
+
+    .detail-card.tint {
+      background: var(--detail-soft);
+    }
+
+    .detail-card-title {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      color: var(--detail-main);
+      text-transform: uppercase;
+    }
+
+    .detail-card-text {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.65;
+      letter-spacing: -0.25px;
+      color: #555555;
+    }
+
+    .ingredient-list,
+    .routine-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .ingredient-list li,
+    .routine-list li {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 11px;
+      border-radius: 999px;
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      font-size: 12px;
+      color: #555555;
+      letter-spacing: -0.2px;
+    }
+
+    .package-sentence {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.58;
+      letter-spacing: -0.45px;
+      font-weight: 800;
+      color: #111111;
+    }
+
+    .detail-actions {
+      margin-top: 26px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .detail-actions .full {
+      grid-column: 1 / -1;
+    }
+
+    .detail-nav-btn {
+      height: 46px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #FFFFFF;
+      color: #111111;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .detail-nav-btn.dark {
+      background: #111111;
+      color: #FFFFFF;
+      border-color: #111111;
     }
 
     .sr-only {
@@ -488,20 +1197,14 @@
     }
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(5px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @media (max-width: 430px) {
       body {
         align-items: flex-start;
-        background: var(--bg);
+        background: #FFFFFF;
       }
 
       .mobile-frame {
@@ -513,120 +1216,603 @@
       }
     }
   </style>
+
+  <style id="todo-image-match-override">
+    :root {
+      --todo-blue: #6EA8FE;
+      --todo-blue-dark: #111111;
+      --todo-soft-blue: #EAF4FF;
+      --todo-line: #E8ECEF;
+      --todo-divider: #F1F3F5;
+      --todo-text: #111111;
+      --todo-body: #666666;
+      --todo-muted: #999999;
+      --todo-done: #A6ADB5;
+    }
+
+    body {
+      background: #E9ECEF !important;
+    }
+
+    .mobile-frame {
+      background: #FFFFFF !important;
+      border-radius: 28px !important;
+    }
+
+    .top-shell {
+      padding: 20px 24px 14px !important;
+      background: #FFFFFF !important;
+      border-bottom: 1px solid #EEF1F4 !important;
+    }
+
+    .tab-menu {
+      height: 44px !important;
+      padding: 4px !important;
+      gap: 4px !important;
+      border-radius: 999px !important;
+      background: #F3F5F7 !important;
+    }
+
+    .tab-button {
+      height: 36px !important;
+      border-radius: 999px !important;
+      color: #666666 !important;
+      font-size: 13px !important;
+      font-weight: 700 !important;
+      box-shadow: none !important;
+    }
+
+    .tab-button.active {
+      background: #111111 !important;
+      color: #FFFFFF !important;
+      box-shadow: none !important;
+    }
+
+    .todo-panel-inner {
+      height: 100% !important;
+      padding: 20px 24px 24px !important;
+      background: #FFFFFF !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    .todo-header {
+      margin-bottom: 24px !important;
+      flex: 0 0 auto !important;
+    }
+
+    .todo-brand {
+      margin: 0 0 8px !important;
+      font-size: 12px !important;
+      line-height: 1 !important;
+      color: #999999 !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.06em !important;
+      text-transform: lowercase !important;
+    }
+
+    .date {
+      margin: 0 0 16px !important;
+      font-size: 13px !important;
+      line-height: 1 !important;
+      color: #999999 !important;
+      font-weight: 600 !important;
+      letter-spacing: -0.1px !important;
+    }
+
+    .todo-title {
+      margin: 0 !important;
+      font-size: 30px !important;
+      line-height: 1.28 !important;
+      letter-spacing: -0.95px !important;
+      font-weight: 850 !important;
+      color: #111111 !important;
+    }
+
+    .todo-quote {
+      margin: 8px 0 0 !important;
+      font-size: 14px !important;
+      line-height: 1.6 !important;
+      color: #666666 !important;
+      letter-spacing: -0.25px !important;
+    }
+
+    .input-area {
+      height: 56px !important;
+      margin: 0 0 20px !important;
+      padding: 7px 8px 7px 18px !important;
+      gap: 10px !important;
+      border: 1px solid #E8ECEF !important;
+      border-radius: 999px !important;
+      background: #FFFFFF !important;
+      display: flex !important;
+      align-items: center !important;
+      flex: 0 0 auto !important;
+      transition: border-color 0.18s ease !important;
+    }
+
+    .input-area:focus-within {
+      border-color: rgba(110, 168, 254, 0.82) !important;
+    }
+
+    .input-area input {
+      height: 40px !important;
+      flex: 1 !important;
+      min-width: 0 !important;
+      border: 0 !important;
+      outline: none !important;
+      padding: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      color: #222222 !important;
+      font-size: 15px !important;
+      font-weight: 500 !important;
+      letter-spacing: -0.25px !important;
+    }
+
+    .input-area input::placeholder {
+      color: #A0A7AF !important;
+      font-weight: 500 !important;
+    }
+
+    .add-button {
+      width: 40px !important;
+      height: 40px !important;
+      border-radius: 50% !important;
+      background: #EAF4FF !important;
+      transition: transform 0.18s ease !important;
+    }
+
+    .add-button::before,
+    .add-button::after {
+      width: 15px !important;
+      height: 2px !important;
+      border-radius: 999px !important;
+      background: #6EA8FE !important;
+    }
+
+    .add-button:active {
+      transform: scale(0.96) !important;
+      background: #DDEEFF !important;
+    }
+
+    .filter-tabs {
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      margin: 0 0 20px !important;
+      flex: 0 0 auto !important;
+    }
+
+    .filter-tab {
+      height: 34px !important;
+      padding: 0 14px !important;
+      border: 1px solid #E8ECEF !important;
+      border-radius: 999px !important;
+      background: #FFFFFF !important;
+      color: #777777 !important;
+      font-size: 13px !important;
+      font-weight: 700 !important;
+      letter-spacing: -0.2px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      white-space: nowrap !important;
+    }
+
+    .filter-tab.active {
+      background: #EAF4FF !important;
+      border-color: #CFE5FF !important;
+      color: #111111 !important;
+    }
+
+    .list-wrap {
+      flex: 1 !important;
+      min-height: 0 !important;
+      overflow-y: auto !important;
+      padding-right: 0 !important;
+    }
+
+    .list-wrap::-webkit-scrollbar {
+      width: 0 !important;
+    }
+
+    .todo-list {
+      margin: 0 !important;
+      padding: 0 !important;
+      list-style: none !important;
+    }
+
+    .todo-item {
+      min-height: 60px !important;
+      padding: 16px 0 !important;
+      margin: 0 !important;
+      border: 0 !important;
+      border-bottom: 1px solid #F1F3F5 !important;
+      border-radius: 0 !important;
+      background: #FFFFFF !important;
+      display: grid !important;
+      grid-template-columns: 22px 1fr 28px !important;
+      gap: 12px !important;
+      align-items: center !important;
+      animation: fadeIn 0.18s ease !important;
+    }
+
+    .check {
+      width: 22px !important;
+      height: 22px !important;
+      border: 1.5px solid #CDD5DF !important;
+      border-radius: 50% !important;
+      background: #FFFFFF !important;
+      transition: background 0.18s ease, border-color 0.18s ease !important;
+    }
+
+    .check::after {
+      left: 50% !important;
+      top: 47% !important;
+      width: 8px !important;
+      height: 5px !important;
+      border-left: 2px solid #FFFFFF !important;
+      border-bottom: 2px solid #FFFFFF !important;
+      transform: translate(-50%, -50%) rotate(-45deg) !important;
+    }
+
+    .todo-item.done .check {
+      background: #6EA8FE !important;
+      border-color: #6EA8FE !important;
+    }
+
+    .todo-text {
+      min-width: 0 !important;
+      font-size: 15px !important;
+      line-height: 1.45 !important;
+      font-weight: 600 !important;
+      letter-spacing: -0.3px !important;
+      color: #222222 !important;
+      word-break: break-word !important;
+    }
+
+    .todo-item.done .todo-text {
+      color: #A6ADB5 !important;
+      text-decoration: line-through !important;
+      text-decoration-thickness: 1px !important;
+    }
+
+    .delete-button {
+      width: 28px !important;
+      height: 28px !important;
+      border-radius: 50% !important;
+      background: transparent !important;
+      opacity: 0.56 !important;
+    }
+
+    .delete-button::before,
+    .delete-button::after {
+      width: 12px !important;
+      height: 1.5px !important;
+      background: #999999 !important;
+    }
+
+    .empty {
+      margin-top: 8px !important;
+      text-align: center !important;
+      color: #777777 !important;
+      display: none;
+    }
+
+    .empty-icon {
+      width: 54px !important;
+      height: 54px !important;
+      margin: 0 auto 16px !important;
+      border-radius: 50% !important;
+      background: #FFFFFF !important;
+      border: 1px dashed #CDD5DF !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      position: relative !important;
+    }
+
+    .empty-icon::before,
+    .empty-icon::after {
+      content: "" !important;
+      position: absolute !important;
+      left: 50% !important;
+      top: 50% !important;
+      width: 15px !important;
+      height: 1.5px !important;
+      border: 0 !important;
+      border-radius: 999px !important;
+      background: #CDD5DF !important;
+      transform: translate(-50%, -50%) !important;
+      margin: 0 !important;
+    }
+
+    .empty-icon::after {
+      transform: translate(-50%, -50%) rotate(90deg) !important;
+    }
+
+    .empty p {
+      margin: 0 !important;
+      font-size: 14px !important;
+      line-height: 1.62 !important;
+      color: #777777 !important;
+      letter-spacing: -0.25px !important;
+    }
+
+    .bottom-note {
+      display: none !important;
+    }
+
+    .sr-only {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+
+    @media (max-width: 430px) {
+      body {
+        background: #FFFFFF !important;
+      }
+
+      .mobile-frame {
+        width: 100vw !important;
+        height: 100vh !important;
+        min-height: 844px !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+      }
+    }
+  </style>
+
+
+  <style id="todo-edit-override">
+    button.todo-text {
+      width: 100% !important;
+      display: block !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: 0 !important;
+      background: transparent !important;
+      text-align: left !important;
+      cursor: text !important;
+      line-height: 1.45 !important;
+    }
+
+    button.todo-text:active {
+      opacity: 0.72 !important;
+    }
+
+    .todo-edit-input {
+      width: 100% !important;
+      height: 38px !important;
+      padding: 0 12px !important;
+      border: 1px solid #E8ECEF !important;
+      border-radius: 12px !important;
+      outline: none !important;
+      background: #FAFBFC !important;
+      color: #222222 !important;
+      font-size: 15px !important;
+      font-weight: 600 !important;
+      letter-spacing: -0.3px !important;
+      line-height: 38px !important;
+    }
+
+    .todo-edit-input:focus {
+      border-color: #6EA8FE !important;
+      background: #FFFFFF !important;
+    }
+
+    .todo-item.editing .check {
+      opacity: 0.42 !important;
+    }
+
+    .todo-item.editing .delete-button {
+      opacity: 0.35 !important;
+    }
+  </style>
+
 </head>
 <body>
   <main class="mobile-frame">
     <section class="app">
-      <nav class="tab-menu" aria-label="상단 탭 메뉴">
-        <button class="tab-button active" type="button" data-tab="todo">오늘의 할 일</button>
-        <button class="tab-button" type="button" data-tab="intro">온도컵 소개</button>
-      </nav>
+      <div class="top-shell">
+        <nav class="tab-menu" aria-label="상단 탭 메뉴">
+          <button class="tab-button active" type="button" data-tab="todo">오늘의 할 일</button>
+          <button class="tab-button" type="button" data-tab="intro">온도컵 소개</button>
+        </nav>
+      </div>
 
       <section class="tab-panel active" id="todoPanel">
-        <header class="header">
-          <div class="date" id="todayText">오늘 날짜</div>
-          <h1>TO DO LIST</h1>
-          <p class="quote">작은 할 일을 마치면, 오늘의 온도도 조금 편안해져요.</p>
+        <div class="todo-panel-inner">
+          <header class="todo-header">
+            <p class="todo-brand">ondocup</p>
+            <div class="date" id="todayText">오늘 날짜</div>
+            <h1 class="todo-title">오늘의 할 일</h1>
+            <p class="todo-quote">작은 할 일을 마치면, 오늘의 온도도 조금 편안해져요.</p>
+          </header>
 
-          <div class="summary-card">
-            <div class="summary-title">완료 현황</div>
-            <div class="summary-count"><span id="doneCount">0</span>/<span id="totalCount">0</span>개 완료</div>
+          <form class="input-area" id="todoForm">
+            <input
+              id="todoInput"
+              type="text"
+              placeholder="할 일을 입력해주세요"
+              autocomplete="off"
+              maxlength="40"
+            />
+            <button class="icon-button add-button" type="submit" aria-label="할 일 추가">
+              <span class="sr-only">할 일 추가</span>
+            </button>
+          </form>
+
+          <nav class="filter-tabs" aria-label="할 일 필터">
+            <button class="filter-tab active" type="button" data-filter="all">전체</button>
+            <button class="filter-tab" type="button" data-filter="active">진행 중</button>
+            <button class="filter-tab" type="button" data-filter="done">완료</button>
+          </nav>
+
+          <div class="list-wrap">
+            <ul class="todo-list" id="todoList"></ul>
+
+            <div class="empty" id="emptyState">
+              <div class="empty-icon" aria-hidden="true"></div>
+              <p>오늘은 조금 느슨해도 괜찮아요.<br />생각난 일을 하나 적어보세요.</p>
+            </div>
           </div>
-        </header>
 
-        <form class="input-area" id="todoForm">
-          <input
-            id="todoInput"
-            type="text"
-            placeholder="할 일을 입력해 주세요"
-            autocomplete="off"
-            maxlength="40"
-          />
-          <button class="icon-button add-button" type="submit" aria-label="할 일 추가">
-            <span class="sr-only">할 일 추가</span>
-          </button>
-        </form>
-
-        <div class="list-wrap">
-          <ul class="todo-list" id="todoList"></ul>
-
-          <div class="empty" id="emptyState">
-            <div class="empty-icon" aria-hidden="true"></div>
-            <p>아직 등록된 할 일이 없습니다.<br />오늘 해야 할 일을 적어보세요.</p>
-          </div>
+          <div class="bottom-note">입력한 할 일은 이 브라우저에 자동 저장됩니다.</div>
         </div>
-
-        <div class="bottom-note">입력한 할 일은 이 브라우저에 자동 저장됩니다.</div>
       </section>
 
       <section class="tab-panel" id="introPanel">
-        <div class="intro-wrap">
-          <div class="brand-card">
-            <span class="brand-label">ONDO CUP</span>
-            <h2 class="brand-title">하루의 기분과 온도에 맞춰 마시는 티 브랜드</h2>
-            <p class="brand-desc">
-              온도컵은 바쁜 하루 속에서도 나의 상태를 잠깐 들여다볼 수 있도록 돕는 논커피 티 브랜드입니다.
-              기분, 집중, 휴식, 밤의 루틴에 맞춰 차를 고르고 오늘의 할 일을 차분히 정리해보세요.
-            </p>
+        <div class="onboarding">
+          <div class="intro-scroll" id="introScroll">
+            <section class="intro-section hero-section" id="brandIntro">
+              <div class="brand-logo">
+                <span class="logo-mark" aria-hidden="true"></span>
+                ONDO CUP
+              </div>
+
+              <h1 class="main-title">지금의 온도에 맞는<br />차를 골라보세요</h1>
+              <p class="sub-copy">하루의 기분과 상황에 맞춰 마시는<br />6가지 블렌딩 티</p>
+
+              <div class="hero-visual" aria-label="온도컵 대표 패키지와 찻잔 이미지">
+                <div class="soft-line"></div>
+
+                <div class="hero-package-wrap">
+                  <div class="package-mockup" style="--main:#6EA8FE; --sub:#D9ED92;">
+                    <div class="pack-logo">ONDO CUP</div>
+                    <div class="pack-top-line"></div>
+                    <div class="wave"></div>
+                    <div class="pack-bottom-name">clear<br />focus</div>
+                    <div class="pack-number">02</div>
+                  </div>
+                </div>
+
+                <div class="tea-cup" aria-hidden="true">
+                  <span class="steam s1"></span>
+                  <span class="steam s2"></span>
+                  <span class="steam s3"></span>
+                  <div class="cup-bowl"></div>
+                  <div class="cup-handle"></div>
+                </div>
+              </div>
+
+              <button class="primary-btn" type="button" data-scroll-to="temperatures">6가지 차 보기</button>
+            </section>
+
+            <section class="intro-section" id="temperatures">
+              <span class="section-kicker">Six Temperatures</span>
+              <h2 class="section-title">하루의 흐름에 맞춘<br />6가지 온도</h2>
+              <p class="section-desc">아침, 집중, 환기, 차분함, 휴식, 밤의 마무리까지 지금의 상태에 맞는 차를 골라보세요.</p>
+
+              <div class="temperature-grid" id="temperatureGrid"></div>
+            </section>
+
+            <section class="intro-section" id="packageSelect">
+              <span class="section-kicker">Package Select</span>
+              <h2 class="section-title">어떤 한 잔이<br />필요하신가요?</h2>
+              <p class="section-desc">현재의 기분과 상황에 맞는 차를 선택해보세요. 같은 구조 안에서 컬러와 이름만 달라지는 온도컵의 패키지 시스템을 확인할 수 있습니다.</p>
+
+              <div class="package-list" id="packageList"></div>
+            </section>
+
+            <section class="intro-section" id="brandInfo">
+              <span class="section-kicker">Brand System</span>
+              <h2 class="section-title">하루의 흐름에 맞춘<br />6가지 블렌딩</h2>
+
+              <div class="info-blocks">
+                <article class="info-block">
+                  <div class="info-visual" aria-hidden="true"></div>
+                  <h3 class="info-title">01 시간에 따라</h3>
+                  <p class="info-desc">아침부터 밤까지, 하루의 시간에 어울리는 맛과 향을 블렌딩했습니다.</p>
+                </article>
+
+                <article class="info-block">
+                  <div class="info-visual" aria-hidden="true"></div>
+                  <h3 class="info-title">02 기분에 따라</h3>
+                  <p class="info-desc">가벼움, 집중, 환기, 안정, 휴식, 마무리까지 여섯 가지 기분에 맞춰 설계했습니다.</p>
+                </article>
+
+                <article class="info-block">
+                  <div class="info-visual" aria-hidden="true"></div>
+                  <h3 class="info-title">03 루틴에 따라</h3>
+                  <p class="info-desc">일상 속 티 루틴을 쉽고 간편하게 즐길 수 있도록 티백 형태로 담았습니다.</p>
+                </article>
+              </div>
+            </section>
+
+            <section class="intro-section cta-section" id="finalCta">
+              <div class="cta-card">
+                <h2 class="cta-title">오늘의 한 잔을<br />작은 루틴으로 남겨보세요</h2>
+                <p class="cta-desc">온도컵이 당신의 하루에 가장 좋은 온도를 찾아드릴게요.</p>
+
+                <div class="cta-actions">
+                  <button class="dark-btn" type="button" data-scroll-to="packageSelect">오늘의 차 다시 고르기</button>
+                  <button class="outline-btn" type="button" data-scroll-to="temperatures">전체 라인업 보기</button>
+                </div>
+              </div>
+            </section>
           </div>
 
-          <div class="brand-card">
-            <span class="brand-label">TEA ROUTINE</span>
-            <h2 class="brand-title">오늘의 온도에 맞는 6가지 차</h2>
+          <article class="detail-page" id="detailPage" aria-hidden="true">
+            <div class="detail-top">
+              <button class="back-btn" type="button" id="backToList" aria-label="전체 보기로 돌아가기"></button>
+              <div class="detail-count" id="detailCount">1 / 6</div>
+            </div>
 
-            <div class="tea-list">
-              <div class="tea-item">
-                <span class="tea-dot morning"></span>
-                <div class="tea-text">
-                  <strong>Morning Light</strong>
-                  <span>아침을 가볍게 여는 차</span>
-                </div>
-              </div>
+            <div class="detail-scroll">
+              <section class="detail-hero">
+                <span class="detail-number" id="detailNumber">01</span>
 
-              <div class="tea-item">
-                <span class="tea-dot focus"></span>
-                <div class="tea-text">
-                  <strong>Clear Focus</strong>
-                  <span>맑게 집중하고 싶은 차</span>
-                </div>
-              </div>
+                <div class="detail-package-wrap" id="detailPackageWrap"></div>
 
-              <div class="tea-item">
-                <span class="tea-dot reset"></span>
-                <div class="tea-text">
-                  <strong>Fresh Reset</strong>
-                  <span>기분을 환기하는 차</span>
-                </div>
-              </div>
+                <h2 class="product-name" id="detailName">morning light</h2>
+                <p class="product-kor" id="detailKor">아침을 가볍게 여는 차</p>
+                <div class="blend-name" id="detailBlend">Lemongrass Rooibos Blending Tea</div>
+              </section>
 
-              <div class="tea-item">
-                <span class="tea-dot calm"></span>
-                <div class="tea-text">
-                  <strong>Soft Calm</strong>
-                  <span>마음을 가라앉히는 차</span>
-                </div>
-              </div>
+              <section class="detail-blocks">
+                <article class="detail-card">
+                  <span class="detail-card-title">Blending</span>
+                  <ul class="ingredient-list" id="detailIngredients"></ul>
+                </article>
 
-              <div class="tea-item">
-                <span class="tea-dot rest"></span>
-                <div class="tea-text">
-                  <strong>Warm Rest</strong>
-                  <span>따뜻하게 쉬어가는 차</span>
-                </div>
-              </div>
+                <article class="detail-card">
+                  <span class="detail-card-title">Taste</span>
+                  <p class="detail-card-text" id="detailTaste"></p>
+                </article>
 
-              <div class="tea-item">
-                <span class="tea-dot night"></span>
-                <div class="tea-text">
-                  <strong>Night Down</strong>
-                  <span>밤을 부드럽게 닫는 차</span>
-                </div>
+                <article class="detail-card">
+                  <span class="detail-card-title">For this moment</span>
+                  <p class="detail-card-text" id="detailSituation"></p>
+                </article>
+
+                <article class="detail-card">
+                  <span class="detail-card-title">Routine</span>
+                  <ul class="routine-list" id="detailRoutine"></ul>
+                </article>
+
+                <article class="detail-card tint">
+                  <span class="detail-card-title">Package Sentence</span>
+                  <p class="package-sentence" id="detailSentence"></p>
+                </article>
+              </section>
+
+              <div class="detail-actions">
+                <button class="detail-nav-btn" type="button" id="prevTea">Back</button>
+                <button class="detail-nav-btn" type="button" id="nextTea">next</button>
+                <button class="detail-nav-btn dark full" type="button" id="allTea">전체 보기</button>
               </div>
             </div>
-          </div>
+          </article>
         </div>
-
-        <div class="bottom-note">차 한 잔과 함께 오늘의 루틴을 정리해보세요.</div>
       </section>
     </section>
   </main>
@@ -636,21 +1822,22 @@
     const input = document.getElementById("todoInput");
     const list = document.getElementById("todoList");
     const emptyState = document.getElementById("emptyState");
-    const doneCount = document.getElementById("doneCount");
-    const totalCount = document.getElementById("totalCount");
     const todayText = document.getElementById("todayText");
     const tabButtons = document.querySelectorAll(".tab-button");
+    const filterButtons = document.querySelectorAll(".filter-tab");
     const todoPanel = document.getElementById("todoPanel");
     const introPanel = document.getElementById("introPanel");
 
     let todos = JSON.parse(localStorage.getItem("mobileTodos")) || [];
+    let currentFilter = "all";
+    let editingTodoId = null;
 
     function setToday() {
       const now = new Date();
-      const weekdays = ["일요일", "월", "화", "수", "목", "금", "토"];
+      const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
       const year = now.getFullYear();
-      const month = now.getMonth() + 1;
-      const date = now.getDate();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const date = String(now.getDate()).padStart(2, "0");
       const day = weekdays[now.getDay()];
 
       todayText.textContent = `${year}.${month}.${date} ${day}`;
@@ -674,39 +1861,116 @@
       localStorage.setItem("mobileTodos", JSON.stringify(todos));
     }
 
+    function getFilteredTodos() {
+      if (currentFilter === "active") {
+        return todos.filter((todo) => !todo.done);
+      }
+
+      if (currentFilter === "done") {
+        return todos.filter((todo) => todo.done);
+      }
+
+      return todos;
+    }
+
     function renderTodos() {
+      const visibleTodos = getFilteredTodos();
       list.innerHTML = "";
 
-      todos.forEach((todo) => {
+      visibleTodos.forEach((todo) => {
         const item = document.createElement("li");
-        item.className = `todo-item ${todo.done ? "done" : ""}`;
+        item.className = `todo-item ${todo.done ? "done" : ""} ${editingTodoId === todo.id ? "editing" : ""}`;
 
         const check = document.createElement("button");
         check.className = "icon-button check";
         check.type = "button";
         check.setAttribute("aria-label", "완료 상태 변경");
+        check.disabled = editingTodoId === todo.id;
         check.addEventListener("click", () => toggleTodo(todo.id));
 
-        const text = document.createElement("div");
-        text.className = "todo-text";
-        text.textContent = todo.text;
+        let textElement;
+
+        if (editingTodoId === todo.id) {
+          textElement = document.createElement("input");
+          textElement.className = "todo-edit-input";
+          textElement.type = "text";
+          textElement.value = todo.text;
+          textElement.maxLength = 45;
+          textElement.setAttribute("aria-label", "할 일 내용 수정");
+
+          textElement.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              saveTodoEdit(todo.id, textElement.value);
+            }
+
+            if (event.key === "Escape") {
+              event.preventDefault();
+              cancelTodoEdit();
+            }
+          });
+
+          textElement.addEventListener("blur", () => {
+            saveTodoEdit(todo.id, textElement.value);
+          });
+        } else {
+          textElement = document.createElement("button");
+          textElement.className = "todo-text";
+          textElement.type = "button";
+          textElement.textContent = todo.text;
+          textElement.setAttribute("aria-label", "할 일 수정");
+          textElement.addEventListener("click", () => startTodoEdit(todo.id));
+        }
 
         const del = document.createElement("button");
         del.className = "icon-button delete-button";
         del.type = "button";
         del.setAttribute("aria-label", "삭제");
+        del.disabled = editingTodoId === todo.id;
         del.addEventListener("click", () => deleteTodo(todo.id));
 
         item.appendChild(check);
-        item.appendChild(text);
+        item.appendChild(textElement);
         item.appendChild(del);
         list.appendChild(item);
+
+        if (editingTodoId === todo.id && textElement.classList.contains("todo-edit-input")) {
+          setTimeout(() => {
+            textElement.focus();
+            textElement.setSelectionRange(textElement.value.length, textElement.value.length);
+          }, 0);
+        }
       });
 
-      const completed = todos.filter((todo) => todo.done).length;
-      doneCount.textContent = completed;
-      totalCount.textContent = todos.length;
-      emptyState.style.display = todos.length === 0 ? "block" : "none";
+      emptyState.style.display = visibleTodos.length === 0 ? "block" : "none";
+    }
+
+    function startTodoEdit(id) {
+      editingTodoId = id;
+      renderTodos();
+    }
+
+    function saveTodoEdit(id, value) {
+      const nextValue = value.trim();
+
+      if (!nextValue) {
+        editingTodoId = null;
+        renderTodos();
+        return;
+      }
+
+      todos = todos.map((todo) =>
+        todo.id === id ? { ...todo, text: nextValue } : todo
+      );
+
+      editingTodoId = null;
+      saveTodos();
+      renderTodos();
+    }
+
+    function cancelTodoEdit() {
+      editingTodoId = null;
+      renderTodos();
     }
 
     function addTodo(text) {
@@ -748,6 +2012,15 @@
       });
     });
 
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        filterButtons.forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        currentFilter = button.dataset.filter;
+        renderTodos();
+      });
+    });
+
     form.addEventListener("submit", (event) => {
       event.preventDefault();
 
@@ -762,6 +2035,234 @@
     setToday();
     scheduleDateUpdate();
     renderTodos();
+
+    const teas = [
+      {
+        no: "01",
+        name: "Morning Light",
+        kor: "아침을 가볍게 여는 차",
+        keyword: "아침",
+        blend: "Lemongrass Rooibos Blending Tea",
+        ingredients: ["레몬그라스", "루이보스", "오렌지필", "캐모마일"],
+        taste: "레몬그라스의 산뜻한 허브향과 오렌지필의 은은한 과일향이 가볍게 퍼지고, 루이보스가 베이스여서 떫지 않고 부드럽게 마무리됩니다.",
+        situation: "아침에 몸이 무겁지만 커피는 부담스러울 때, 하루를 가볍게 시작하고 싶을 때 어울립니다.",
+        routine: ["출근 전", "아침 첫 잔", "커피 대신"],
+        sentence: "오늘의 시작을 조금 더 가볍게 열어보세요.",
+        main: "#F4D35E",
+        sub: "#6FD3C1",
+        soft: "#FFF9DD"
+      },
+      {
+        no: "02",
+        name: "Clear Focus",
+        kor: "맑게 집중하고 싶은 차",
+        keyword: "집중",
+        blend: "Peppermint Green Blending Tea",
+        ingredients: ["페퍼민트", "녹차", "레몬밤", "로즈마리"],
+        taste: "페퍼민트의 시원한 허브감과 녹차의 깔끔한 풍미가 어우러져, 입안이 개운하게 정리되는 맑고 산뜻한 차입니다.",
+        situation: "머리가 흐릿하거나, 업무와 공부 전에 마음을 정리하고 싶을 때 잘 어울립니다.",
+        routine: ["업무 시작 전", "공부할 때", "오후 집중"],
+        sentence: "지금 필요한 건 더 빠른 속도가 아니라, 맑은 한 모금입니다.",
+        main: "#6EA8FE",
+        sub: "#D9ED92",
+        soft: "#EEF6FF"
+      },
+      {
+        no: "03",
+        name: "Fresh Reset",
+        kor: "기분을 환기하는 차",
+        keyword: "환기",
+        blend: "Hibiscus Fruit Blending Tea",
+        ingredients: ["히비스커스", "로즈힙", "애플피스", "오렌지필"],
+        taste: "히비스커스의 새콤한 맛과 과일 조각의 은은한 단맛이 느껴지는 산뜻한 과일 티입니다. 아이스로 마셨을 때 더 상큼한 리프레시감이 살아납니다.",
+        situation: "점심 이후 몸이 늘어지고, 답답한 기분을 살짝 바꾸고 싶을 때 추천합니다.",
+        routine: ["점심 후", "오후 3시", "기분 전환", "아이스티"],
+        sentence: "답답한 흐름을 가볍게 환기해볼 시간이에요.",
+        main: "#F28482",
+        sub: "#84D2F6",
+        soft: "#FFF1F1"
+      },
+      {
+        no: "04",
+        name: "Soft Calm",
+        kor: "마음을 가라앉히는 차",
+        keyword: "안정",
+        blend: "Chamomile Lavender Blending Tea",
+        ingredients: ["캐모마일", "라벤더", "레몬밤", "루이보스"],
+        taste: "캐모마일의 부드러운 꽃향과 라벤더의 은은한 허브향이 조용하게 퍼지고, 맛이 강하지 않아 둥글게 마무리됩니다.",
+        situation: "긴장되거나 예민해진 날, 마음의 속도를 조금 낮추고 싶을 때 어울립니다.",
+        routine: ["회의 전후", "발표 전후", "하루 끝", "조용한 휴식"],
+        sentence: "천천히 숨을 고르면, 지금의 온도도 지나갑니다.",
+        main: "#B497D6",
+        sub: "#B8E1FF",
+        soft: "#F6F1FF"
+      },
+      {
+        no: "05",
+        name: "Warm Rest",
+        kor: "따뜻하게 쉬어가는 차",
+        keyword: "휴식",
+        blend: "Vanilla Rooibos Blending Tea",
+        ingredients: ["루이보스", "바닐라빈", "카카오닙스", "오렌지필", "시나몬"],
+        taste: "루이보스의 고소하고 부드러운 맛에 바닐라와 카카오닙스의 은은한 달콤함이 더해져 포근하고 만족감 있게 마무리됩니다.",
+        situation: "퇴근 후 몸과 마음이 지쳤을 때, 나를 위한 작은 휴식이 필요할 때 좋습니다.",
+        routine: ["퇴근 후", "주말 오후", "간식 대신", "혼자 쉬는 시간"],
+        sentence: "바쁘게 흘러간 하루 끝에, 나를 위한 작은 쉼을 건네요.",
+        main: "#E6C7A8",
+        sub: "#D98C8C",
+        soft: "#FBF3EA"
+      },
+      {
+        no: "06",
+        name: "Night Down",
+        kor: "밤을 부드럽게 닫는 차",
+        keyword: "밤",
+        blend: "Chamomile Lemon Balm Blending Tea",
+        ingredients: ["캐모마일", "레몬밤", "라벤더", "루이보스"],
+        taste: "캐모마일과 레몬밤이 중심이 되는 은은하고 부드러운 허브티로, 라벤더가 잔잔하게 남아 하루를 조용히 마무리하게 합니다.",
+        situation: "하루가 끝났는데 생각이 많거나, 잠들기 전 조용한 루틴이 필요할 때 어울립니다.",
+        routine: ["잠들기 전", "하루 마무리", "핸드폰 내려놓기", "밤의 차"],
+        sentence: "오늘도 충분히 애썼어요. 이제 천천히 내려놓아도 괜찮아요.",
+        main: "#5C6AC4",
+        sub: "#F2C6A0",
+        soft: "#F0F2FF"
+      }
+    ];
+
+    const temperatureGrid = document.getElementById("temperatureGrid");
+    const packageList = document.getElementById("packageList");
+    const detailPage = document.getElementById("detailPage");
+    const backToList = document.getElementById("backToList");
+    const detailCount = document.getElementById("detailCount");
+    const detailNumber = document.getElementById("detailNumber");
+    const detailPackageWrap = document.getElementById("detailPackageWrap");
+    const detailName = document.getElementById("detailName");
+    const detailKor = document.getElementById("detailKor");
+    const detailBlend = document.getElementById("detailBlend");
+    const detailIngredients = document.getElementById("detailIngredients");
+    const detailTaste = document.getElementById("detailTaste");
+    const detailSituation = document.getElementById("detailSituation");
+    const detailRoutine = document.getElementById("detailRoutine");
+    const detailSentence = document.getElementById("detailSentence");
+    const prevTea = document.getElementById("prevTea");
+    const nextTea = document.getElementById("nextTea");
+    const allTea = document.getElementById("allTea");
+
+    let currentTeaIndex = 0;
+
+    function packageHTML(tea) {
+      const lowerName = tea.name.toLowerCase().replace(" ", "<br />");
+      const blendName = tea.blend.replace(" Blending Tea", "<br />Blending Tea");
+
+      return `
+        <div class="package-mockup" style="--main:${tea.main}; --sub:${tea.sub};">
+          <div class="pack-logo">ONDO CUP</div>
+          <div class="pack-top-line"></div>
+          <div class="wave"></div>
+          <div class="pack-bottom-name">${lowerName}</div>
+
+          <div class="pack-number">${tea.no}</div>
+        </div>
+      `;
+    }
+
+    function renderTemperatureGrid() {
+      temperatureGrid.innerHTML = teas.map((tea, index) => `
+        <button class="temp-card" type="button" data-tea-index="${index}" aria-label="${tea.name} 상세 보기">
+          <span class="temp-chip" style="background: linear-gradient(135deg, ${tea.main}, ${tea.sub});"></span>
+          <span class="temp-no">${tea.no}</span>
+          <span class="temp-name">${tea.name}</span>
+          <span class="temp-keyword">${tea.keyword}</span>
+        </button>
+      `).join("");
+    }
+
+    function renderPackageList() {
+      packageList.innerHTML = teas.map((tea, index) => `
+        <button class="package-list-button" type="button" data-tea-index="${index}" style="--item-main:${tea.main}; --item-soft:${tea.soft};" aria-label="${tea.name} 상세 페이지로 이동">
+          <div class="list-package-mini" aria-hidden="true">
+            ${packageHTML(tea)}
+          </div>
+          <span class="list-info">
+            <span class="list-number">${tea.no}</span>
+            <span class="list-name">${tea.name}</span>
+            <span class="list-kor">${tea.kor}</span>
+          </span>
+          <span class="arrow" aria-hidden="true"></span>
+        </button>
+      `).join("");
+    }
+
+    function openTeaDetail(index) {
+      currentTeaIndex = index;
+      const tea = teas[index];
+
+      detailPage.style.setProperty("--detail-main", tea.main);
+      detailPage.style.setProperty("--detail-soft", tea.soft);
+
+      detailCount.textContent = `${index + 1} / ${teas.length}`;
+      detailNumber.textContent = tea.no;
+      detailPackageWrap.innerHTML = packageHTML(tea);
+      detailName.textContent = tea.name;
+      detailKor.textContent = tea.kor;
+      detailBlend.textContent = tea.blend;
+      detailTaste.textContent = tea.taste;
+      detailSituation.textContent = tea.situation;
+      detailSentence.textContent = tea.sentence;
+
+      detailIngredients.innerHTML = tea.ingredients.map((item) => `<li>${item}</li>`).join("");
+      detailRoutine.innerHTML = tea.routine.map((item) => `<li>${item}</li>`).join("");
+
+      detailPage.classList.add("active");
+      detailPage.setAttribute("aria-hidden", "false");
+      detailPage.querySelector(".detail-scroll").scrollTop = 0;
+    }
+
+    function closeTeaDetail() {
+      detailPage.classList.remove("active");
+      detailPage.setAttribute("aria-hidden", "true");
+    }
+
+    function moveTea(step) {
+      const nextIndex = (currentTeaIndex + step + teas.length) % teas.length;
+      openTeaDetail(nextIndex);
+    }
+
+    function scrollToSection(id) {
+      const section = document.getElementById(id);
+      if (!section) return;
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    renderTemperatureGrid();
+    renderPackageList();
+
+    temperatureGrid.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-tea-index]");
+      if (!button) return;
+      openTeaDetail(Number(button.dataset.teaIndex));
+    });
+
+    packageList.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-tea-index]");
+      if (!button) return;
+      openTeaDetail(Number(button.dataset.teaIndex));
+    });
+
+    document.querySelectorAll("[data-scroll-to]").forEach((button) => {
+      button.addEventListener("click", () => {
+        closeTeaDetail();
+        scrollToSection(button.dataset.scrollTo);
+      });
+    });
+
+    backToList.addEventListener("click", closeTeaDetail);
+    allTea.addEventListener("click", () => {
+      closeTeaDetail();
+      setTimeout(() => scrollToSection("packageSelect"), 80);
+    });
+    prevTea.addEventListener("click", () => moveTea(-1));
+    nextTea.addEventListener("click", () => moveTea(1));
   </script>
 </body>
 </html>
