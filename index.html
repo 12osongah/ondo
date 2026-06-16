@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>온도컵 To Do List</title>
+  <style>
+    :root {
+      --primary: #5B8DEF;
+      --primary-dark: #3F6FD9;
+      --bg: #F5F7FB;
+      --card: #FFFFFF;
+      --text: #1F2937;
+      --sub: #8A94A6;
+      --line: #E6EAF2;
+      --done: #B7BFCE;
+      --danger: #FF6B6B;
+      --soft-blue: #EDF4FF;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #E9EEF7;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    button,
+    input {
+      font-family: inherit;
+    }
+
+    button {
+      appearance: none;
+      -webkit-appearance: none;
+      padding: 0;
+      margin: 0;
+      border: 0;
+      line-height: 1;
+      background: none;
+    }
+
+    .mobile-frame {
+      width: 390px;
+      height: 844px;
+      background: var(--bg);
+      overflow: hidden;
+      position: relative;
+      border-radius: 28px;
+      box-shadow: 0 20px 50px rgba(31, 41, 55, 0.12);
+    }
+
+    .app {
+      height: 100%;
+      padding: 28px 22px 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tab-menu {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 5px;
+      margin-bottom: 22px;
+      background: #EAF0FA;
+      border-radius: 16px;
+      flex: 0 0 auto;
+    }
+
+    .tab-button {
+      width: 100%;
+      height: 40px;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--sub);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      cursor: pointer;
+      transition: 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tab-button.active {
+      background: #FFFFFF;
+      color: var(--primary-dark);
+      box-shadow: 0 4px 12px rgba(31, 41, 55, 0.06);
+    }
+
+    .tab-panel {
+      display: none;
+      height: 100%;
+      min-height: 0;
+      flex-direction: column;
+    }
+
+    .tab-panel.active {
+      display: flex;
+    }
+
+    .header {
+      margin-bottom: 18px;
+      flex: 0 0 auto;
+    }
+
+    .date {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+      letter-spacing: -0.2px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.25;
+      letter-spacing: -0.7px;
+    }
+
+    .quote {
+      margin: 9px 0 0;
+      font-size: 14px;
+      line-height: 1.55;
+      color: #667085;
+      letter-spacing: -0.25px;
+    }
+
+    .summary-card {
+      margin-top: 17px;
+      padding: 18px;
+      background: linear-gradient(135deg, #FFFFFF 0%, #EDF4FF 100%);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+    }
+
+    .summary-title {
+      font-size: 13px;
+      color: var(--sub);
+      margin-bottom: 8px;
+    }
+
+    .summary-count {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+    }
+
+    .input-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex: 0 0 auto;
+    }
+
+    .input-area input {
+      flex: 1;
+      min-width: 0;
+      height: 50px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      padding: 0 15px;
+      font-size: 15px;
+      outline: none;
+      background: var(--card);
+      color: var(--text);
+    }
+
+    .input-area input::placeholder {
+      color: #B3BAC7;
+    }
+
+    .input-area input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(91, 141, 239, 0.12);
+    }
+
+    .icon-button {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .add-button {
+      width: 54px;
+      height: 50px;
+      border-radius: 15px;
+      background: var(--primary);
+      transition: 0.2s ease;
+    }
+
+    .add-button::before,
+    .add-button::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 18px;
+      height: 2.5px;
+      border-radius: 999px;
+      background: #FFFFFF;
+      transform: translate(-50%, -50%);
+    }
+
+    .add-button::after {
+      transform: translate(-50%, -50%) rotate(90deg);
+    }
+
+    .add-button:active {
+      transform: scale(0.96);
+      background: var(--primary-dark);
+    }
+
+    .list-wrap {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 2px;
+      min-height: 0;
+    }
+
+    .list-wrap::-webkit-scrollbar {
+      width: 0;
+    }
+
+    .todo-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 58px;
+      padding: 14px;
+      margin-bottom: 10px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      animation: fadeIn 0.18s ease;
+    }
+
+    .check {
+      width: 22px;
+      height: 22px;
+      border: 2px solid #CBD3E1;
+      border-radius: 50%;
+      background: #FFFFFF;
+      transition: 0.2s ease;
+    }
+
+    .check::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 48%;
+      width: 8px;
+      height: 5px;
+      border-left: 2px solid #FFFFFF;
+      border-bottom: 2px solid #FFFFFF;
+      transform: translate(-50%, -50%) rotate(-45deg);
+      opacity: 0;
+    }
+
+    .todo-item.done .check {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .todo-item.done .check::after {
+      opacity: 1;
+    }
+
+    .todo-text {
+      flex: 1;
+      min-width: 0;
+      font-size: 15px;
+      line-height: 1.45;
+      letter-spacing: -0.2px;
+      word-break: break-word;
+    }
+
+    .todo-item.done .todo-text {
+      color: var(--done);
+      text-decoration: line-through;
+    }
+
+    .delete-button {
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      background: #FFF0F0;
+    }
+
+    .delete-button::before,
+    .delete-button::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 12px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--danger);
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .delete-button::after {
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
+
+    .empty {
+      margin-top: 80px;
+      text-align: center;
+      color: var(--sub);
+      display: none;
+    }
+
+    .empty-icon {
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 14px;
+      border-radius: 20px;
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .empty-icon::before {
+      content: "";
+      width: 16px;
+      height: 9px;
+      border-left: 3px solid var(--primary);
+      border-bottom: 3px solid var(--primary);
+      transform: rotate(-45deg);
+      margin-top: -4px;
+    }
+
+    .empty p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .intro-wrap {
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
+      padding-right: 2px;
+    }
+
+    .intro-wrap::-webkit-scrollbar {
+      width: 0;
+    }
+
+    .brand-card {
+      padding: 20px;
+      margin-bottom: 12px;
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+    }
+
+    .brand-label {
+      display: inline-flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 11px;
+      margin-bottom: 14px;
+      border-radius: 999px;
+      background: var(--soft-blue);
+      color: var(--primary-dark);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+
+    .brand-title {
+      margin: 0 0 10px;
+      font-size: 24px;
+      line-height: 1.32;
+      letter-spacing: -0.7px;
+    }
+
+    .brand-desc {
+      margin: 0;
+      color: #667085;
+      font-size: 14px;
+      line-height: 1.65;
+      letter-spacing: -0.25px;
+    }
+
+    .tea-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 9px;
+      margin-top: 16px;
+    }
+
+    .tea-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 13px;
+      background: #FAFBFE;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+    }
+
+    .tea-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+
+    .tea-dot.morning { background: #F7C66A; }
+    .tea-dot.focus { background: #75B7FF; }
+    .tea-dot.reset { background: #75D9B2; }
+    .tea-dot.calm { background: #B69DF8; }
+    .tea-dot.rest { background: #E8A06D; }
+    .tea-dot.night { background: #6673A6; }
+
+    .tea-text {
+      min-width: 0;
+    }
+
+    .tea-text strong {
+      display: block;
+      font-size: 14px;
+      line-height: 1.4;
+      letter-spacing: -0.2px;
+    }
+
+    .tea-text span {
+      display: block;
+      margin-top: 2px;
+      font-size: 12px;
+      color: var(--sub);
+      letter-spacing: -0.2px;
+    }
+
+    .bottom-note {
+      padding-top: 14px;
+      font-size: 12px;
+      color: var(--sub);
+      text-align: center;
+      flex: 0 0 auto;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 430px) {
+      body {
+        align-items: flex-start;
+        background: var(--bg);
+      }
+
+      .mobile-frame {
+        width: 100vw;
+        height: 100vh;
+        min-height: 844px;
+        border-radius: 0;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="mobile-frame">
+    <section class="app">
+      <nav class="tab-menu" aria-label="상단 탭 메뉴">
+        <button class="tab-button active" type="button" data-tab="todo">오늘의 할 일</button>
+        <button class="tab-button" type="button" data-tab="intro">온도컵 소개</button>
+      </nav>
+
+      <section class="tab-panel active" id="todoPanel">
+        <header class="header">
+          <div class="date" id="todayText">오늘 날짜</div>
+          <h1>오늘의 할 일</h1>
+          <p class="quote">작은 할 일을 마치면, 오늘의 온도도 조금 편안해져요.</p>
+
+          <div class="summary-card">
+            <div class="summary-title">완료 현황</div>
+            <div class="summary-count"><span id="doneCount">0</span>/<span id="totalCount">0</span>개 완료</div>
+          </div>
+        </header>
+
+        <form class="input-area" id="todoForm">
+          <input
+            id="todoInput"
+            type="text"
+            placeholder="할 일을 입력해 주세요"
+            autocomplete="off"
+            maxlength="40"
+          />
+          <button class="icon-button add-button" type="submit" aria-label="할 일 추가">
+            <span class="sr-only">할 일 추가</span>
+          </button>
+        </form>
+
+        <div class="list-wrap">
+          <ul class="todo-list" id="todoList"></ul>
+
+          <div class="empty" id="emptyState">
+            <div class="empty-icon" aria-hidden="true"></div>
+            <p>아직 등록된 할 일이 없습니다.<br />오늘 해야 할 일을 적어보세요.</p>
+          </div>
+        </div>
+
+        <div class="bottom-note">입력한 할 일은 이 브라우저에 자동 저장됩니다.</div>
+      </section>
+
+      <section class="tab-panel" id="introPanel">
+        <div class="intro-wrap">
+          <div class="brand-card">
+            <span class="brand-label">ONDO CUP</span>
+            <h2 class="brand-title">하루의 기분과 온도에 맞춰 마시는 티 브랜드</h2>
+            <p class="brand-desc">
+              온도컵은 바쁜 하루 속에서도 나의 상태를 잠깐 들여다볼 수 있도록 돕는 논커피 티 브랜드입니다.
+              기분, 집중, 휴식, 밤의 루틴에 맞춰 차를 고르고 오늘의 할 일을 차분히 정리해보세요.
+            </p>
+          </div>
+
+          <div class="brand-card">
+            <span class="brand-label">TEA ROUTINE</span>
+            <h2 class="brand-title">오늘의 온도에 맞는 6가지 차</h2>
+
+            <div class="tea-list">
+              <div class="tea-item">
+                <span class="tea-dot morning"></span>
+                <div class="tea-text">
+                  <strong>Morning Light</strong>
+                  <span>아침을 가볍게 여는 차</span>
+                </div>
+              </div>
+
+              <div class="tea-item">
+                <span class="tea-dot focus"></span>
+                <div class="tea-text">
+                  <strong>Clear Focus</strong>
+                  <span>맑게 집중하고 싶은 차</span>
+                </div>
+              </div>
+
+              <div class="tea-item">
+                <span class="tea-dot reset"></span>
+                <div class="tea-text">
+                  <strong>Fresh Reset</strong>
+                  <span>기분을 환기하는 차</span>
+                </div>
+              </div>
+
+              <div class="tea-item">
+                <span class="tea-dot calm"></span>
+                <div class="tea-text">
+                  <strong>Soft Calm</strong>
+                  <span>마음을 가라앉히는 차</span>
+                </div>
+              </div>
+
+              <div class="tea-item">
+                <span class="tea-dot rest"></span>
+                <div class="tea-text">
+                  <strong>Warm Rest</strong>
+                  <span>따뜻하게 쉬어가는 차</span>
+                </div>
+              </div>
+
+              <div class="tea-item">
+                <span class="tea-dot night"></span>
+                <div class="tea-text">
+                  <strong>Night Down</strong>
+                  <span>밤을 부드럽게 닫는 차</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bottom-note">차 한 잔과 함께 오늘의 루틴을 정리해보세요.</div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById("todoForm");
+    const input = document.getElementById("todoInput");
+    const list = document.getElementById("todoList");
+    const emptyState = document.getElementById("emptyState");
+    const doneCount = document.getElementById("doneCount");
+    const totalCount = document.getElementById("totalCount");
+    const todayText = document.getElementById("todayText");
+    const tabButtons = document.querySelectorAll(".tab-button");
+    const todoPanel = document.getElementById("todoPanel");
+    const introPanel = document.getElementById("introPanel");
+
+    let todos = JSON.parse(localStorage.getItem("mobileTodos")) || [];
+
+    function setToday() {
+      const now = new Date();
+      const weekdays = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+      const date = now.getDate();
+      const day = weekdays[now.getDay()];
+
+      todayText.textContent = `${year}년 ${month}월 ${date}일 ${day}`;
+    }
+
+    function scheduleDateUpdate() {
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setDate(now.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+
+      const timeUntilTomorrow = tomorrow.getTime() - now.getTime();
+
+      setTimeout(() => {
+        setToday();
+        scheduleDateUpdate();
+      }, timeUntilTomorrow);
+    }
+
+    function saveTodos() {
+      localStorage.setItem("mobileTodos", JSON.stringify(todos));
+    }
+
+    function renderTodos() {
+      list.innerHTML = "";
+
+      todos.forEach((todo) => {
+        const item = document.createElement("li");
+        item.className = `todo-item ${todo.done ? "done" : ""}`;
+
+        const check = document.createElement("button");
+        check.className = "icon-button check";
+        check.type = "button";
+        check.setAttribute("aria-label", "완료 상태 변경");
+        check.addEventListener("click", () => toggleTodo(todo.id));
+
+        const text = document.createElement("div");
+        text.className = "todo-text";
+        text.textContent = todo.text;
+
+        const del = document.createElement("button");
+        del.className = "icon-button delete-button";
+        del.type = "button";
+        del.setAttribute("aria-label", "삭제");
+        del.addEventListener("click", () => deleteTodo(todo.id));
+
+        item.appendChild(check);
+        item.appendChild(text);
+        item.appendChild(del);
+        list.appendChild(item);
+      });
+
+      const completed = todos.filter((todo) => todo.done).length;
+      doneCount.textContent = completed;
+      totalCount.textContent = todos.length;
+      emptyState.style.display = todos.length === 0 ? "block" : "none";
+    }
+
+    function addTodo(text) {
+      todos.unshift({
+        id: Date.now(),
+        text,
+        done: false
+      });
+
+      saveTodos();
+      renderTodos();
+    }
+
+    function toggleTodo(id) {
+      todos = todos.map((todo) =>
+        todo.id === id ? { ...todo, done: !todo.done } : todo
+      );
+
+      saveTodos();
+      renderTodos();
+    }
+
+    function deleteTodo(id) {
+      todos = todos.filter((todo) => todo.id !== id);
+
+      saveTodos();
+      renderTodos();
+    }
+
+    tabButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const tab = button.dataset.tab;
+
+        tabButtons.forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+
+        todoPanel.classList.toggle("active", tab === "todo");
+        introPanel.classList.toggle("active", tab === "intro");
+      });
+    });
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const value = input.value.trim();
+      if (!value) return;
+
+      addTodo(value);
+      input.value = "";
+      input.focus();
+    });
+
+    setToday();
+    scheduleDateUpdate();
+    renderTodos();
+  </script>
+</body>
+</html>
